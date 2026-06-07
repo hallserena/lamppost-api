@@ -3,12 +3,12 @@ from typing import Optional
 from pydantic import BaseModel
 from database import supabase
 from auth_utils import get_current_user
-import resend
 import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 router = APIRouter()
-
-resend.api_key = os.getenv("RESEND_API_KEY")
 
 class BugReport(BaseModel):
     description: str
@@ -35,39 +35,28 @@ def submit_bug(report: BugReport, user_id: str = Depends(get_current_user)):
 
     # Send email notification
     try:
-        resend.Emails.send({
-            "from":    "Lamppost Bugs <onboarding@resend.dev>",
-            "to":      "projectlamppost.app@gmail.com",
-            "subject": f"[{report.severity.upper()}] New bug report",
-            "html":    f"""
-                <h2>New Bug Report</h2>
-                <p><strong>Severity:</strong> {report.severity}</p>
-                <p><strong>Page:</strong> {report.page or 'Not specified'}</p>
-                <p><strong>Description:</strong></p>
-                <p>{report.description}</p>
-                <p><strong>User email:</strong> {report.user_email or 'Not provided'}</p>
-            """,
-        })
+        msg = MIMEMultipart()
+        msg['From']    = os.getenv("GMAIL_USER")
+        msg['To']      = os.getenv("GMAIL_USER")
+        msg['Subject'] = f"[{report.severity.upper()}] New Lamppost bug report"
+
+        body = f"""
+New Bug Report
+
+Severity: {report.severity}
+Page: {report.page or 'Not specified'}
+User email: {report.user_email or 'Not provided'}
+
+Description:
+{report.description}
+        """
+        msg.attach(MIMEText(body, 'plain'))
+
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+            smtp.login(os.getenv("GMAIL_USER"), os.getenv("GMAIL_APP_PASSWORD"))
+            smtp.send_message(msg)
+        print("Email sent successfully")
     except Exception as e:
         print(f"Email failed: {e}")
 
     return {"message": "Bug report submitted"}
-
-# Send email notification
-    try:
-        response = resend.Emails.send({
-            "from":    "onboarding@resend.dev",
-            "to":      "projectlamppost.app@gmail.com",
-            "subject": f"[{report.severity.upper()}] New bug report",
-            "html":    f"""
-                <h2>New Bug Report</h2>
-                <p><strong>Severity:</strong> {report.severity}</p>
-                <p><strong>Page:</strong> {report.page or 'Not specified'}</p>
-                <p><strong>Description:</strong></p>
-                <p>{report.description}</p>
-                <p><strong>User email:</strong> {report.user_email or 'Not provided'}</p>
-            """,
-        })
-        print(f"Email response: {response}")
-    except Exception as e:
-        print(f"Email failed: {e}")
