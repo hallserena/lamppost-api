@@ -42,7 +42,7 @@ def create_entry(entry: EntryCreate, user_id: str = Depends(get_current_user)):
     )
     return result.data[0]
 
-@router.get("/{entry_id}", response_model=EntryResponse)
+@router.get("/{entry_id}/", response_model=EntryResponse)
 def get_entry(entry_id: str, user_id: str = Depends(get_current_user)):
     result = (
         supabase.table("entries")
@@ -56,7 +56,7 @@ def get_entry(entry_id: str, user_id: str = Depends(get_current_user)):
         raise HTTPException(status_code=404, detail="Entry not found")
     return result.data
 
-@router.patch("/{entry_id}", response_model=EntryResponse)
+@router.patch("/{entry_id}/", response_model=EntryResponse)
 def update_entry(entry_id: str, updates: EntryUpdate, user_id: str = Depends(get_current_user)):
     payload = {k: v for k, v in updates.model_dump().items() if v is not None}
     if not payload:
@@ -72,6 +72,6 @@ def update_entry(entry_id: str, updates: EntryUpdate, user_id: str = Depends(get
         raise HTTPException(status_code=404, detail="Entry not found")
     return result.data[0]
 
-@router.delete("/{entry_id}", status_code=204)
+@router.delete("/{entry_id}/", status_code=204)
 def delete_entry(entry_id: str, user_id: str = Depends(get_current_user)):
     supabase.table("entries").delete().eq("id", entry_id).eq("user_id", user_id).execute()

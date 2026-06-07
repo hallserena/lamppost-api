@@ -34,7 +34,7 @@ def list_moods(
     )
     return result.data
 
-@router.get("/charts")
+@router.get("/charts/")
 def mood_charts(
     days: int = Query(90),
     user_id: str = Depends(get_current_user),

@@ -39,7 +39,7 @@ def log_skill(skill: SkillCreate, user_id: str = Depends(get_current_user)):
     )
     return result.data[0]
 
-@router.patch("/{skill_id}", response_model=SkillResponse)
+@router.patch("/{skill_id}/", response_model=SkillResponse)
 def update_skill(skill_id: str, updates: SkillUpdate, user_id: str = Depends(get_current_user)):
     payload = {k: v for k, v in updates.model_dump().items() if v is not None}
     if not payload:
@@ -55,6 +55,6 @@ def update_skill(skill_id: str, updates: SkillUpdate, user_id: str = Depends(get
         raise HTTPException(status_code=404, detail="Skill not found")
     return result.data[0]
 
-@router.delete("/{skill_id}", status_code=204)
+@router.delete("/{skill_id}/", status_code=204)
 def delete_skill(skill_id: str, user_id: str = Depends(get_current_user)):
     supabase.table("skills_log").delete().eq("id", skill_id).eq("user_id", user_id).execute()
