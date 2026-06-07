@@ -7,8 +7,6 @@ app = FastAPI(title="Lamppost API", version="1.0.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",
-        "http://localhost:5174",
         "https://lamppost-frontend.vercel.app",
         "https://lamppost-frontend-79p0k1n2b-serena-hall-s-projects.vercel.app",
         "https://lamppost-frontend-ey98u2q6m-serena-hall-s-projects.vercel.app",
