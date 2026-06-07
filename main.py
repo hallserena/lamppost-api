@@ -12,6 +12,7 @@ app.add_middleware(
         "https://lamppost-frontend.vercel.app",
         "https://lamppost-frontend-79p0k1n2b-serena-hall-s-projects.vercel.app",
         "https://lamppost-frontend-ey98u2q6m-serena-hall-s-projects.vercel.app",
+        'https://lamppost-frontend-ey98u2q6m-serena-hall-s-projects.vercel.app/login',
     ],
     allow_credentials=True,
     allow_methods=["*"],
