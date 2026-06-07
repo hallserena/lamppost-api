@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import entries, moods, skills, auth
 
-app = FastAPI(title="Lamppost API", version="1.0.0")
+app = FastAPI(title="Lamppost API", version="1.0.0", redirect_slashes=False)
 
 app.add_middleware(
     CORSMiddleware,
